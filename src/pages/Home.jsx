@@ -6,8 +6,12 @@ import food1 from './images/food1.jpg'
 import food2 from './images/food2.jpg'
 import food3 from './images/food3.jpg'
 import background from './images/background-2.jpg'
+import { useNavigate } from "react-router-dom"
 
 export default function Home() {
+    const navigate = useNavigate()
+
+
     return (
         <Container fluid
             className="p-0"
@@ -77,7 +81,7 @@ export default function Home() {
                     }}
                 >
                     <p className="text-center" style={{ fontWeight: "600" }}>20% off your first meal if you register with us right now! :</p>
-                    <Button>Register</Button>
+                    <Button onClick={() => navigate("/login")}>Register</Button>
                 </Col>
             </Row>
         </Container>

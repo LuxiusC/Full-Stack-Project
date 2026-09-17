@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import background from "./images/background-2.jpg"
 import icon from "./images/icon.png"
-import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, updateProfile, signInWithEmailAndPassword } from "firebase/auth";
 import { AuthContext } from "../contexts/AuthContext";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
@@ -10,15 +10,19 @@ import { Container, Form, Image, Button } from "react-bootstrap";
 export default function Login() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [displayName, setDisplayName] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+    const [success, setSuccess] = useState('')
     const [error, setError] = useState('')
     const [register, setRegister] = useState(false)
     const { user } = useContext(AuthContext)
     const navigate = useNavigate()
     const auth = getAuth()
 
-    const loginOrRegister = () => setRegister((prev) => !prev)
-
+    const loginOrRegister = () => {
+        setRegister((prev) => !prev)
+        setSuccess('')
+    }
 
     const handleSignUp = async (e) => {
         e.preventDefault()
@@ -34,6 +38,11 @@ export default function Login() {
                 email,
                 password
             )
+
+            await updateProfile(res.user, {
+                displayName: displayName
+            })
+            setSuccess("Register succesfully.Please proceed to login.")
             console.log(res.user)
         } catch (error) {
             console.error(error)
@@ -55,10 +64,9 @@ export default function Login() {
         }
     }
 
-
-    useEffect(() => {
-        if (user) navigate('/')
-    }, [user, navigate])
+    //  useEffect(() => {
+    //       if (user) navigate('/')
+    //  }, [user, navigate])
 
 
     return (
@@ -71,6 +79,19 @@ export default function Login() {
                     <div style={{ display: "flex", justifyContent: "center" }}>
                         {register ? <p style={{ fontWeight: "500", fontSize: "20px", color: "white" }}>Register</p> : <p style={{ fontWeight: "500", fontSize: "20px", color: "white" }}>Login</p>}
                     </div>
+                    {register ?
+                        <Form.Group className="d-flex align-items-center mb-2">
+                            <Form.Control
+                                placeholder="Display Name:"
+                                type="text"
+                                value={displayName}
+                                onChange={(e) => setDisplayName(e.target.value)}
+                                style={{ width: "100%", height: "100%" }}
+                                required
+                            />
+                        </Form.Group>
+                        : null
+                    }
                     <Form.Group className="d-flex align-items-center mb-2">
                         <Form.Control
                             placeholder="Email:"
@@ -106,7 +127,9 @@ export default function Login() {
                     }
                     <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
                         {register ? <Button type="submit" style={{ padding: "8px", width: "100px", backgroundColor: "white", border: "transparent", color: "black", fontWeight: "500" }}>Register</Button> : <Button type="submit" style={{ padding: "8px", width: "100px", backgroundColor: "white", border: "transparent", color: "black", fontWeight: "500" }}>Login</Button>}
+
                     </div>
+                    {success && <div style={{ marginTop: "10px", display: "flex", justifyContent: 'center', color: "#22C55E" }}><i class="bi bi-check me-1"></i> {success}</div>}
                     {error && <div style={{ marginTop: "10px", display: "flex", justifyContent: 'center', color: "#ed6c02" }}> <i className="bi bi-exclamation-triangle me-1"></i>{error}</div>}
                     <div style={{ display: 'flex', alignItems: 'center', margin: '15px 0' }}>
                         <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.3)' }} />
