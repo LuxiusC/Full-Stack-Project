@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { Col, Row, Image, Form, Card, Button } from "react-bootstrap";
 import icon from './images/icon.png'
+import { useNavigate } from "react-router-dom";
 
 export default function MarketPlace() {
     const [activeCategories, setActiveCategories] = useState([])
     const [CategoryNames, setCategoryNames] = useState([])
     const [meals, setMeals] = useState([])
     const [mealDetail, setMealDetail] = useState([])
-
+    const navigate = useNavigate()
 
     const handleMealInstruction = (mealId) => {
         if (mealDetail > 0) {
@@ -16,6 +17,7 @@ export default function MarketPlace() {
         fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`)
             .then((res) => res.json())
             .then((data) => setMealDetail(data.meals))
+        navigate(`/mealDetails/${mealId}`)
     }
 
     console.log(meals)
