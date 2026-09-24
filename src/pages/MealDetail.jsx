@@ -1,17 +1,40 @@
 import background from './images/background-2.jpg'
 import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { createContext } from 'react'
-
-const mealContext = createContext(mealContext)
+import { useContext } from 'react'
+import { AuthContext } from '../contexts/AuthContext'
+import axios from 'axios'
 
 export default function MealDetail() {
     const { id } = useParams()
     const [meal, setMeal] = useState([])
     const [ingredients, setIngredients] = useState([])
+    const [success, setSuccess] = useState(false)
+    const { url, userInfo } = useContext(AuthContext)
 
-    console.log(meal)
-    console.log(ingredients)
+    const uid = userInfo?.firebase_uid
+    console.log(meal.strCountry)
+    console.log(userInfo)
+    console.log(uid)
+
+    const handleFavourite = async () => {
+        if (!meal) return
+        const data = {
+            recipe_id: meal.idMeal,
+            recipe_name: meal.strMeal,
+            recipe_country: meal.strCountry,
+            youtube_url: meal.strYoutube,
+            image_url: meal.strMealThumb
+        }
+        try {
+
+            const res = await axios.post(`${url}/recipes/post/${uid}`, data)
+            setSuccess(true)
+            console.log(res)
+        } catch (err) {
+            console.error(err, err.message)
+        }
+    }
 
     useEffect(() => {
         setMeal([])
@@ -51,6 +74,8 @@ export default function MealDetail() {
                 )
             })}
             <p>{meal.strInstructions}</p>
+            <button onClick={() => handleFavourite()}>S</button>
+            {success ? <p>nice</p> : null}
         </div>
     )
 }

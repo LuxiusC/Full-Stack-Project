@@ -11,7 +11,6 @@ export function AuthProvider({ children }) {
     const [loading, setLoading] = useState(true)
     const [userInfo, setUserInfo] = useState(null)
     const [error, setError] = useState('')
-    const [imageUrl, setImageUrl] = useState(null)
 
     useEffect(() => {
         return auth.onAuthStateChanged((userNow) => {
@@ -43,7 +42,7 @@ export function AuthProvider({ children }) {
         return url
     }
 
-    const value = { user, handleImageUpload, userInfo, error }
+    const value = { url, user, handleImageUpload, userInfo, error }
 
     return (
         <AuthContext.Provider value={value}>

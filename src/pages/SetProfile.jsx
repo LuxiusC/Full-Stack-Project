@@ -5,8 +5,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function SetProfile() {
-    const urls = "http://localhost:3000"
-    const { user, handleImageUpload } = useContext(AuthContext)
+
+    const { user, handleImageUpload, url } = useContext(AuthContext)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [name, setName] = useState('')
