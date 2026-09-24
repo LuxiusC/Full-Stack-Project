@@ -14,9 +14,6 @@ export default function MarketPlace() {
         if (mealDetail > 0) {
             setMealDetail([])
         }
-        fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`)
-            .then((res) => res.json())
-            .then((data) => setMealDetail(data.meals))
         navigate(`/mealDetails/${mealId}`)
     }
 

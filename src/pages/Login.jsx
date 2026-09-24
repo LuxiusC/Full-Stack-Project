@@ -70,7 +70,7 @@ export default function Login() {
 
 
     return (
-        <Container fluid className="vh-100 px-0" style={{ display: "flex", backgroundImage: `url(${background})`, alignItems: "center", justifyContent: "center" }}>
+        <Container fluid className="vh-100 px-0" style={{ display: "flex", backgroundImage: `linear-gradient(rgba(244, 235, 217, 0.5), rgba(244, 235, 217, 0.7)),url(${background})`, alignItems: "center", justifyContent: "center" }}>
             <div className="row g-3" style={{ display: "flex", backgroundColor: "rgba(160, 130, 109)", borderRadius: "15px", padding: "18px" }}>
                 <div style={{ display: 'flex', height: "70px", justifyContent: "center" }}>
                     <Image src={icon} />

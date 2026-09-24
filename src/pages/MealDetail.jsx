@@ -1,6 +1,9 @@
 import background from './images/background-2.jpg'
 import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import { createContext } from 'react'
+
+const mealContext = createContext(mealContext)
 
 export default function MealDetail() {
     const { id } = useParams()
@@ -9,6 +12,7 @@ export default function MealDetail() {
 
     console.log(meal)
     console.log(ingredients)
+
     useEffect(() => {
         setMeal([])
         fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`)
@@ -21,25 +25,32 @@ export default function MealDetail() {
                 setMeal(mealData)
 
 
-                const extractedItems = []
+                const items = []
                 for (let i = 1; i <= 20; i++) {
                     const ingredients = mealData[`strIngredient${i}`]
                     const measure = mealData[`strMeasure${i}`]
 
                     if (ingredients && ingredients.trim() !== "")
-                        extractedItems.push({
+                        items.push({
                             ingredient: ingredients,
                             measure: measure
                         })
                 }
-                setIngredients(extractedItems)
+                setIngredients(items)
             })
             .catch((err) => console.error(err))
-    }, [])
+    }, [id])
 
 
 
     return (
-        <p>hi</p>
+        <div>
+            {ingredients.map((item, index) => {
+                return (
+                    <p key={index}>{item.ingredient}:{item.measure}</p>
+                )
+            })}
+            <p>{meal.strInstructions}</p>
+        </div>
     )
 }

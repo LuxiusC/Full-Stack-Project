@@ -18,10 +18,10 @@ export default function Home() {
             style={{
                 backgroundColor: "#E8DDD5",
                 backgroundImage: `linear-gradient(rgba(244, 235, 217, 0.85), rgba(244, 235, 217, 0.85)),url(${background})`,
-                minHeight: "800px",
+                minHeight: "740px",
             }}>
             <Navbar expand="md" style={{ backgroundColor: "#F9F8F3" }}>
-                <Container className="d-flex" style={{ paddingLeft: "70px", paddingRight: "70px", justifyContent: "space-between" }}>
+                <Container className="d-flex" style={{ paddingLeft: "70px", paddingRight: "70px" }}>
                     <Navbar.Brand><Image src={icon} height="80" width="140" /></Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
@@ -38,7 +38,7 @@ export default function Home() {
                 <Carousel style={{ maxWidth: "850px", maxHeight: "550px", padding: "0px" }}>
                     <Carousel.Item>
                         <Image src={food1}
-                            style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                            style={{ width: "100%", height: "100%" }}
                         />
                     </Carousel.Item>
                     <Carousel.Item>
