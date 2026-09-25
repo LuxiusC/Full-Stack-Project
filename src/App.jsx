@@ -6,6 +6,7 @@ import MealDetail from "./pages/MealDetail"
 import UserPage from "./pages/UserPage"
 import { AuthProvider } from "./contexts/AuthContext"
 import SetProfile from "./pages/SetProfile"
+import Favourite from "./pages/Favourite"
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
           <Route path='/mealDetails/:id' element={<MealDetail />} />
           <Route path='/userpage' element={<UserPage />} />
           <Route path='/setProfile' element={<SetProfile />} />
+          <Route path='/favourites' element={<Favourite />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

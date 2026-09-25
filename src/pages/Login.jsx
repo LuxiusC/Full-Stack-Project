@@ -26,6 +26,7 @@ export default function Login() {
 
     const handleSignUp = async (e) => {
         e.preventDefault()
+
         if (password !== confirmPassword) {
             setError("Password does not match")
             return
@@ -42,6 +43,7 @@ export default function Login() {
             await updateProfile(res.user, {
                 displayName: displayName
             })
+
             setSuccess("Register succesfully.Please proceed to login.")
             console.log(res.user)
         } catch (error) {
