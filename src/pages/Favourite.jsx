@@ -14,19 +14,25 @@ export default function Favourite() {
     const [price, setPrice] = useState(0.00)
     const [image_url, setImageUrl] = useState(null)
     const [recipe_id, setRecipe_id] = useState('')
+    const [recipe_country, setRecipe_country] = useState('')
     const [success, setSuccess] = useState('')
 
     console.log(categories)
     console.log(selectedCountries)
     console.log(recipe_id)
     console.log(image_url)
+    console.log(favourites)
     const uid = userInfo?.firebase_uid
     const navigate = useNavigate()
 
     const handleClose = () => setShow(false)
 
-    const handleShow = (recipeId) => {
+
+
+
+    const handleShow = (recipeId, recipeCountry) => {
         setRecipe_id(recipeId)
+        setRecipe_country(recipeCountry)
         setShow(true)
     }
 
@@ -60,13 +66,16 @@ export default function Favourite() {
         setImageUrl(uploadUrl)
     }
 
+
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         const data = {
             recipe_id: recipe_id,
             title: title,
             price: price ? parseFloat(price) : 0.00,
-            image_url: image_url
+            image_url: image_url,
+            recipe_country: recipe_country
         }
         try {
             const res = await axios.post(`${url}/userRecipe/post/${uid}`, data)
@@ -138,7 +147,7 @@ export default function Favourite() {
                                         <Card.Link href={`${favourite.youtube_url}`}>Guide: {favourite.youtube_url}</Card.Link>
                                         <div className="d-flex flex-row flex-wrap gap-2" style={{}}>
                                             <Button onClick={() => mealDetail(favourite.recipe_id)}>Instruction / Ingredients</Button>
-                                            <Button onClick={() => handleShow(favourite.recipe_id)}>Post your own creation here</Button>
+                                            <Button onClick={() => handleShow(favourite.recipe_id, favourite.recipe_country)}>Post your own creation here</Button>
                                         </div>
                                     </Card.Body>
                                 </Card>
@@ -174,6 +183,14 @@ export default function Favourite() {
                         <Form.Control
                             type="file"
                             onChange={(e) => submitImageUrl(e)}
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Country:</Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={recipe_country}
+                            disabled
                         />
                     </Form.Group>
                     <Button type="submit">Submit</Button>

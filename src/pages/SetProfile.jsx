@@ -6,7 +6,7 @@ import axios from "axios";
 
 export default function SetProfile() {
 
-    const { user, handleImageUpload, url } = useContext(AuthContext)
+    const { user, handleImageUpload, urls } = useContext(AuthContext)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [name, setName] = useState('')
