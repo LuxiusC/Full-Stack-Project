@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useContext } from 'react'
 import { AuthContext } from '../contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 export default function MealDetail() {
@@ -11,6 +12,7 @@ export default function MealDetail() {
     const [ingredients, setIngredients] = useState([])
     const [success, setSuccess] = useState(false)
     const { url, userInfo } = useContext(AuthContext)
+    const navigate = useNavigate()
 
     const uid = userInfo?.firebase_uid
     console.log(meal.strCountry)
@@ -69,6 +71,7 @@ export default function MealDetail() {
     return (
         <div style={{ backgroundImage: `linear-gradient(rgba(244, 235, 217, 0.8), rgba(244, 235, 217, 0.6)),url(${background})`, minHeight: "100vh" }} className="d-flex justify-content-center align-items-center">
             <div style={{ fontFamily: "cursive", color: "#2C2C2C", borderRadius: "10px", textAlign: "start", backgroundColor: "rgba(255, 255, 255, 0.75)", width: "80%", padding: "10px" }}>
+                <span onClick={() => navigate('/recipes')}><i class="bi bi-arrow-bar-left"></i></span>
                 <p style={{ textAlign: "center" }}>Ingredients List:</p>
                 <ul>
                     {ingredients.map((item, index) => {
@@ -82,7 +85,7 @@ export default function MealDetail() {
                 <div className="d-flex justify-content-center">
                     <button style={{ backgroundColor: "transparent", border: "0px", marginTop: "5px", marginBottom: "5px" }} onClick={() => handleFavourite()}><i style={{ color: "red" }} class="bi bi-heart-fill"></i> Add To Favourite</button>
                 </div>
-                {success ? <p>Added To Favourite</p> : null}
+                {success ? <p style={{ textAlign: "center" }}>Added To Favourite</p> : null}
             </div>
         </div>
     )

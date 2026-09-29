@@ -8,7 +8,7 @@ import axios from "axios";
 
 export default function SetProfile() {
 
-    const { user, handleImageUpload, urls } = useContext(AuthContext)
+    const { user, handleImageUpload, url } = useContext(AuthContext)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [name, setName] = useState('')
@@ -21,6 +21,10 @@ export default function SetProfile() {
     const navigate = useNavigate()
 
     console.log(image_url)
+    console.log(uid)
+
+    console.log(user)
+
 
     useEffect(() => {
         if (!user?.displayName && !user?.email) return
@@ -50,12 +54,12 @@ export default function SetProfile() {
         }
         try {
             setLoading(true)
-            const response = await axios.post(`${urls}/profile`, data)
+            const response = await axios.post(`${url}/profile`, data)
             setUserData(response.data)
-            navigate('/userpage')
+            navigate('/recipes')
 
         } catch (err) {
-            setError(err, "Fail to update")
+            setError(err, err.message)
         } finally {
             setLoading(false)
         }

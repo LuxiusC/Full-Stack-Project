@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import { useContext } from "react";
 export default function Recipes() {
-    const { userInfo } = useContext(AuthContext)
+    const { userInfo, handleLogout } = useContext(AuthContext)
     const [activeCategories, setActiveCategories] = useState([])
     const [CategoryNames, setCategoryNames] = useState([])
     const [meals, setMeals] = useState([])
@@ -15,6 +15,14 @@ export default function Recipes() {
 
     console.log(userInfo)
 
+    const userLogout = async () => {
+        try {
+            await handleLogout()
+            navigate('/login')
+        } catch (err) {
+            console.error(err, err.message)
+        }
+    }
 
     const handleMealInstruction = (mealId) => {
         if (mealDetail > 0) {
@@ -91,6 +99,9 @@ export default function Recipes() {
                             />
                         )
                     })}
+                </div>
+                <div className="mt-auto" style={{ display: "flex", justifyContent: "center" }}>
+                    <Button variant="danger" onClick={() => userLogout()} style={{ width: "90%" }}>Logout</Button>
                 </div>
             </Col>
             <Col xs={8} md={9} lg={10} className="py-1"  >

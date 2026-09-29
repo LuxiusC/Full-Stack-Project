@@ -45,6 +45,7 @@ export default function Login() {
             })
 
             setSuccess("Register succesfully.Please proceed to login.")
+            navigate('/login')
             console.log(res.user)
         } catch (error) {
             console.error(error)
@@ -60,20 +61,19 @@ export default function Login() {
                 email,
                 password
             )
+            navigate('/setProfile')
             console.log(res.user)
         } catch (error) {
             console.error(error)
         }
     }
 
-    useEffect(() => {
-        if (user) navigate('/recipes')
-    }, [user, navigate])
 
 
     return (
         <Container fluid className="vh-100 px-0" style={{ display: "flex", backgroundImage: `linear-gradient(rgba(244, 235, 217, 0.5), rgba(244, 235, 217, 0.7)),url(${background})`, alignItems: "center", justifyContent: "center" }}>
             <div className="row g-3" style={{ display: "flex", backgroundColor: "rgba(160, 130, 109)", borderRadius: "15px", padding: "18px" }}>
+                <Button onClick={() => navigate("/")} style={{ display: "flex", justifyContent: "start", border: "0px", backgroundColor: "transparent" }}><i class="bi bi-arrow-bar-left"></i></Button>
                 <div style={{ display: 'flex', height: "70px", justifyContent: "center" }}>
                     <Image src={icon} />
                 </div>

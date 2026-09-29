@@ -2,6 +2,8 @@ import { createContext, useEffect, useState } from 'react'
 import { auth, storage } from "../firebase"
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import axios from 'axios'
+import { signOut } from 'firebase/auth'
+import { useNavigate } from 'react-router-dom'
 
 export const AuthContext = createContext()
 
@@ -11,7 +13,9 @@ export function AuthProvider({ children }) {
     const [loading, setLoading] = useState(true)
     const [userInfo, setUserInfo] = useState(null)
     const [error, setError] = useState('')
+
     console.log(user)
+
     useEffect(() => {
         return auth.onAuthStateChanged((userNow) => {
             setUser(userNow)
@@ -42,7 +46,18 @@ export function AuthProvider({ children }) {
         return url
     }
 
-    const value = { url, user, handleImageUpload, userInfo, error }
+    const handleLogout = async () => {
+        try {
+            await signOut(auth)
+            setUserInfo(null)
+            console.log("Signed out succesfully")
+
+        } catch (err) {
+            console.error(err, err.message)
+        }
+    }
+
+    const value = { url, user, handleImageUpload, userInfo, error, handleLogout }
 
     return (
         <AuthContext.Provider value={value}>

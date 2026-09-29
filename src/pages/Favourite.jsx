@@ -7,7 +7,7 @@ import icon from './images/icon.png'
 import background from './images/background-2.jpg'
 
 export default function Favourite() {
-    const { userInfo, url, handleImageUpload } = useContext(AuthContext)
+    const { userInfo, url, handleImageUpload, handleLogout } = useContext(AuthContext)
     const [favourites, setFavourites] = useState(null)
     const [show, setShow] = useState(false)
     const [categories, setCategories] = useState([])
@@ -19,17 +19,23 @@ export default function Favourite() {
     const [recipe_country, setRecipe_country] = useState('')
     const [success, setSuccess] = useState('')
 
-    console.log(categories)
-    console.log(selectedCountries)
-    console.log(recipe_id)
+
+
     console.log(image_url)
-    console.log(favourites)
+
     const uid = userInfo?.firebase_uid
     const navigate = useNavigate()
 
     const handleClose = () => setShow(false)
 
-
+    const userLogout = async () => {
+        try {
+            await handleLogout()
+            navigate('/login')
+        } catch (err) {
+            console.error(err, err.message)
+        }
+    }
 
 
     const handleShow = (recipeId, recipeCountry) => {
@@ -152,6 +158,9 @@ export default function Favourite() {
                             )
                         })}
                     </div>
+                    <div className="mt-auto" style={{ display: "flex", justifyContent: "center" }}>
+                        <Button variant="danger" onClick={() => userLogout()} style={{ width: "90%" }}>Logout</Button>
+                    </div>
                 </Col>
                 <Col sm={8} md={9} lg={9} className="py-2">
                     <Row className="row-gy-3 pe-2 g-4">
@@ -167,8 +176,8 @@ export default function Favourite() {
                                                 <Card.Link href={`${favourite.youtube_url}`}>Guide</Card.Link>
                                             </div>
                                             <div className="d-flex flex-column flex-wrap gap-2" style={{}}>
-                                                <Button onClick={() => mealDetail(favourite.recipe_id)}>Instruction / Ingredients</Button>
-                                                <Button onClick={() => handleShow(favourite.recipe_id, favourite.recipe_country)}>Post your own creation here</Button>
+                                                <Button style={{ border: "0px", backgroundColor: "#B29A78" }} onClick={() => mealDetail(favourite.recipe_id)}>Instruction / Ingredients</Button>
+                                                <Button style={{ border: "0px", backgroundColor: "#B29A78" }} onClick={() => handleShow(favourite.recipe_id, favourite.recipe_country)}>Post your own creation here</Button>
                                             </div>
                                         </Card.Body>
                                     </Card>
@@ -179,7 +188,7 @@ export default function Favourite() {
                 </Col>
             </Row>
             <Modal show={show} onHide={handleClose}>
-                <Form className="d-flex flex-column gap-3" onSubmit={handleSubmit} style={{ fontFamily: "cursive", padding: "15px" }}>
+                <Form className="d-flex flex-column gap-2" onSubmit={handleSubmit} style={{ fontFamily: "cursive", padding: "15px" }}>
                     <Form.Group>
                         <p style={{ textAlign: 'center', fontSize: "25px" }}>Post Detail</p>
                         <hr style={{ width: "95%", margin: "0 auto", marginBottom: "20px" }} />
@@ -196,7 +205,7 @@ export default function Favourite() {
                         <Form.Control
                             type="number"
                             min="0"
-                            step="1.00"
+                            step="0.01"
                             value={price}
                             onChange={(e) => setPrice(e.target.value)}
                             required
