@@ -66,9 +66,9 @@ export default function Login() {
         }
     }
 
-    //  useEffect(() => {
-    //       if (user) navigate('/')
-    //  }, [user, navigate])
+    useEffect(() => {
+        if (user) navigate('/recipes')
+    }, [user, navigate])
 
 
     return (

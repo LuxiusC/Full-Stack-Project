@@ -1,3 +1,4 @@
+import background from './images/background-2.jpg'
 import { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { Form, Button } from "react-bootstrap";
@@ -19,6 +20,7 @@ export default function SetProfile() {
 
 
     console.log(image_url)
+
     useEffect(() => {
         if (!user?.displayName && !user?.email) return
         setName(user.displayName)
@@ -57,47 +59,55 @@ export default function SetProfile() {
     }
 
     return (
-        <Form onSubmit={handleSubmit}>
-            <Form.Group>
-                <Form.Label>Your Name: </Form.Label>
-                <Form.Control
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                />
-            </Form.Group>
-            <Form.Group>
-                <Form.Label>Email:</Form.Label>
-                <Form.Control
-                    type="text"
-                    value={email}
-                    disabled
-                />
-            </Form.Group>
-            <Form.Group>
-                <Form.Label>Image:</Form.Label>
-                <Form.Control
-                    type="file"
-                    onChange={imageUpload}
-                />
-            </Form.Group>
-            <Form.Group>
-                <Form.Label>Introduction: </Form.Label>
-                <Form.Control
-                    type="text"
-                    placeholder="Tell us more about you"
-                    value={introduction}
-                    onChange={(e) => setIntroduction(e.target.value)}
-                />
-            </Form.Group><Form.Group>
-                <Form.Label>Occupation: </Form.Label>
-                <Form.Control
-                    type="text"
-                    value={occupation}
-                    onChange={(e) => setOccupation(e.target.value)}
-                />
-            </Form.Group>
-            <Button type="submit">Submit</Button>
-        </Form>
+        <div className="vh-100 d-flex align-items-center justify-content-center" style={{ backgroundImage: `linear-gradient(rgba(244, 235, 217, 0.85), rgba(244, 235, 217, 0.6)),url(${background})` }}>
+
+            <Form style={{ borderRadius: "15px", fontFamily: "cursive", width: "400px", backgroundColor: "rgba(255, 255, 255, 0.75)", padding: "30px" }} onSubmit={handleSubmit}>
+                <p style={{ textAlign: 'center', fontSize: "20px" }}>Profile</p>
+                <Form.Group className="mb-3">
+                    <Form.Label>Your Name: </Form.Label>
+                    <Form.Control
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                </Form.Group>
+                <Form.Group className="mb-3">
+                    <Form.Label>Email:</Form.Label>
+                    <Form.Control
+                        type="text"
+                        value={email}
+                        disabled
+                    />
+                </Form.Group>
+                <Form.Group className="mb-3">
+                    <Form.Label>Image:</Form.Label>
+                    <Form.Control
+                        type="file"
+                        onChange={imageUpload}
+                    />
+                </Form.Group>
+                <Form.Group className="mb-3">
+                    <Form.Label>Introduction: </Form.Label>
+                    <Form.Control
+                        type="text"
+                        placeholder="Tell us more about you"
+                        value={introduction}
+                        onChange={(e) => setIntroduction(e.target.value)}
+                    />
+                </Form.Group>
+                <Form.Group className="mb-3">
+                    <Form.Label>Occupation: </Form.Label>
+                    <Form.Control
+                        type="text"
+                        placeholder='Whats your job ?'
+                        value={occupation}
+                        onChange={(e) => setOccupation(e.target.value)}
+                    />
+                </Form.Group>
+                <div className="d-flex justify-content-center">
+                    <Button type="submit">Submit</Button>
+                </div>
+            </Form>
+        </div>
     )
 }

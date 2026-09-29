@@ -1,15 +1,20 @@
 import { useState, useEffect } from "react";
-import { Col, Row, Image, Form, Card, Button } from "react-bootstrap";
+import { Col, Row, Image, Form, Card, Button, Container } from "react-bootstrap";
 import icon from './images/icon.png'
 import background from './images/background-2.jpg'
 import { useNavigate } from "react-router-dom";
-
+import { AuthContext } from "../contexts/AuthContext";
+import { useContext } from "react";
 export default function Recipes() {
+    const { userInfo } = useContext(AuthContext)
     const [activeCategories, setActiveCategories] = useState([])
     const [CategoryNames, setCategoryNames] = useState([])
     const [meals, setMeals] = useState([])
     const [mealDetail, setMealDetail] = useState([])
     const navigate = useNavigate()
+
+    console.log(userInfo)
+
 
     const handleMealInstruction = (mealId) => {
         if (mealDetail > 0) {
@@ -55,7 +60,16 @@ export default function Recipes() {
                     borderRight: "1px solid rgba(0, 0, 0, 0.08)"
                 }}>
                 <Image src={icon} />
-                <div className="px-5 py-4 px-lg-5">
+                {userInfo ?
+                    <div style={{ textAlign: "center" }}>
+                        <p> Welcome , <a href="/setProfile">{userInfo?.name}</a></p>
+                        <a href="/marketplace" className="me-2">Marketplace</a>
+                        <span><a href="/favourites'">Favourites</a></span>
+                        <hr />
+                    </div>
+                    : ""
+                }
+                <div className="px-5 py-1 px-lg-5">
                     {CategoryNames.map((category) => {
                         const catName = category.strCategory
                         return (
