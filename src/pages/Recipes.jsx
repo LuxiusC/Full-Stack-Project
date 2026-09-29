@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Col, Row, Image, Form, Card, Button } from "react-bootstrap";
 import icon from './images/icon.png'
+import background from './images/background-2.jpg'
 import { useNavigate } from "react-router-dom";
 
 export default function Recipes() {
@@ -47,10 +48,14 @@ export default function Recipes() {
     }, [activeCategories])
 
     return (
-        <Row>
-            <Col xs={4} md={2} lg={2} className="d-flex flex-column vh-100 py-4 position-sticky top-0" style={{ backgroundColor: "#484b6a" }}>
+        <Row style={{ display: "flex", backgroundImage: `linear-gradient(rgba(244, 235, 217, 0.65), rgba(244, 235, 217, 0.6)),url(${background})` }}>
+            <Col xs={4} md={2} lg={2} className="d-flex flex-column vh-100 py-4 position-sticky top-0"
+                style={{
+                    backgroundColor: "rgba(255, 255, 255, 0.95)",
+                    borderRight: "1px solid rgba(0, 0, 0, 0.08)"
+                }}>
                 <Image src={icon} />
-                <div className="px-4 py-4 px-lg-5">
+                <div className="px-5 py-4 px-lg-5">
                     {CategoryNames.map((category) => {
                         const catName = category.strCategory
                         return (
@@ -74,21 +79,21 @@ export default function Recipes() {
                     })}
                 </div>
             </Col>
-            <Col xs={8} md={9} lg={10} >
-                <Row className="row-gy-3">
+            <Col xs={8} md={9} lg={10} className="py-1"  >
+                <Row className="row-gy-3 pe-2 g-4">
                     {meals.map((meal, index) => {
                         const mealName = meal.strMeal
                         const mealPic = meal.strMealThumb
                         const country = meal.strCountry
                         const mealId = meal.idMeal
                         return (
-                            <Col xs={6} md={4} lg={3} >
-                                <Card key={index} className="h-100">
-                                    <Card.Img src={mealPic} />
-                                    <Card.Body>
+                            <Col xs={6} md={4} lg={3}  >
+                                <Card key={index} style={{ padding: "1px", width: "100%", backgroundColor: "rgba(255, 255, 255, 0.85)", textAlign: "center" }} className="h-100">
+                                    <Card.Img src={mealPic} width={100} height={200} />
+                                    <Card.Body className="d-flex flex-column justify-content-between ">
                                         <Card.Title>{mealName}</Card.Title>
                                         <Card.Text>Country:{country}</Card.Text>
-                                        <Button className="w-100" variant="primary" onClick={() => handleMealInstruction(mealId)}>Ingredients/ Instructions</Button>
+                                        <Button className="w-100" style={{ backgroundColor: "#B29A78", border: "0px" }} onClick={() => handleMealInstruction(mealId)}>Ingredients/ Instructions</Button>
                                     </Card.Body>
                                 </Card>
                             </Col>
