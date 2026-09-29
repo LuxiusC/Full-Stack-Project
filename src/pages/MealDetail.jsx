@@ -67,7 +67,7 @@ export default function MealDetail() {
 
 
     return (
-        <div style={{ backgroundImage: `linear-gradient(rgba(244, 235, 217, 0.8), rgba(244, 235, 217, 0.6)),url(${background})` }} className="d-flex justify-content-center align-items-center vh-100">
+        <div style={{ backgroundImage: `linear-gradient(rgba(244, 235, 217, 0.8), rgba(244, 235, 217, 0.6)),url(${background})`, minHeight: "100vh" }} className="d-flex justify-content-center align-items-center">
             <div style={{ fontFamily: "cursive", color: "#2C2C2C", borderRadius: "10px", textAlign: "start", backgroundColor: "rgba(255, 255, 255, 0.75)", width: "80%", padding: "10px" }}>
                 <p style={{ textAlign: "center" }}>Ingredients List:</p>
                 <ul>

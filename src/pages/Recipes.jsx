@@ -62,9 +62,9 @@ export default function Recipes() {
                 <Image src={icon} />
                 {userInfo ?
                     <div style={{ textAlign: "center" }}>
-                        <p> Welcome , <a href="/setProfile">{userInfo?.name}</a></p>
+                        <p> Welcome , <a href="/userpage">{userInfo?.name}</a></p>
                         <a href="/marketplace" className="me-2">Marketplace</a>
-                        <span><a href="/favourites'">Favourites</a></span>
+                        <span><a href="/favourites">Favourites</a></span>
                         <hr />
                     </div>
                     : ""

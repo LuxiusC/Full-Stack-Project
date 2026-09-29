@@ -1,8 +1,10 @@
 import { useEffect, useContext, useState } from "react"
 import { AuthContext } from "../contexts/AuthContext"
 import axios from "axios"
-import { Card, Row, Col, Button, Modal, Form } from "react-bootstrap"
+import { Card, Row, Col, Button, Modal, Form, Image } from "react-bootstrap"
 import { useNavigate } from "react-router-dom"
+import icon from './images/icon.png'
+import background from './images/background-2.jpg'
 
 export default function Favourite() {
     const { userInfo, url, handleImageUpload } = useContext(AuthContext)
@@ -119,46 +121,68 @@ export default function Favourite() {
     }, [])
 
     return (
-        <div className="p-0">
-            <Row style={{ display: "flex" }}>
-                <Col sm={4} md={3} lg={3} className="vh-100 position-sticky top-0" style={{ backgroundColor: "white" }}>
-                    {categories?.map((category) => {
-                        return (
-                            <Form.Check
-                                key={category.id}
-                                type="checkbox"
-                                label={category}
-                                value={category}
-                                checked={selectedCountries?.includes(category)}
-                                onChange={(e) => handleCheckBox(e.target.value)}
-                            />
-                        )
-                    })}
+        <div className="p-0" >
+            <Row style={{ display: "flex", backgroundImage: `linear-gradient(rgba(244, 235, 217, 0.65), rgba(244, 235, 217, 0.6)),url(${background})` }}>
+                <Col xs={4} md={2} lg={2} className="d-flex flex-column vh-100 py-4 position-sticky top-0"
+                    style={{
+                        backgroundColor: "rgba(255, 255, 255, 0.95)",
+                        borderRight: "1px solid rgba(0, 0, 0, 0.08)"
+                    }}>
+                    <Image src={icon} />
+                    {userInfo ?
+                        <div style={{ textAlign: "center" }}>
+                            <p> Welcome , <a href="/userpage">{userInfo?.name}</a></p>
+                            <a href="/recipes" className="me-2">Recipes</a>
+                            <span><a href="/marketplace">Marketplace</a></span>
+                            <hr />
+                        </div>
+                        : ""
+                    }
+                    <div className="px-5 py-2">
+                        {categories?.map((category) => {
+                            return (
+                                <Form.Check
+                                    key={category.id}
+                                    type="checkbox"
+                                    label={category}
+                                    value={category}
+                                    checked={selectedCountries?.includes(category)}
+                                    onChange={(e) => handleCheckBox(e.target.value)}
+                                />
+                            )
+                        })}
+                    </div>
                 </Col>
-                <Col sm={8} md={9} lg={9} className="d-flex flex-row p-3">
-                    {activeCategories()?.map((favourite) => {
-                        return (
-                            <Col sm={3} md={4} lg={3} className="me-3 d-flex" style={{ maxHeight: '500px', objectFit: "cover" }}>
-                                <Card>
-                                    <Card.Img variant="top" src={`${favourite.image_url}`} />
-                                    <Card.Body>
-                                        <Card.Title>{favourite.recipe_name}</Card.Title>
-                                        <Card.Subtitle>Country: {favourite.recipe_country}</Card.Subtitle>
-                                        <Card.Link href={`${favourite.youtube_url}`}>Guide: {favourite.youtube_url}</Card.Link>
-                                        <div className="d-flex flex-row flex-wrap gap-2" style={{}}>
-                                            <Button onClick={() => mealDetail(favourite.recipe_id)}>Instruction / Ingredients</Button>
-                                            <Button onClick={() => handleShow(favourite.recipe_id, favourite.recipe_country)}>Post your own creation here</Button>
-                                        </div>
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-                        )
-                    })}
+                <Col sm={8} md={9} lg={9} className="py-2">
+                    <Row className="row-gy-3 pe-2 g-4">
+                        {activeCategories()?.map((favourite) => {
+                            return (
+                                <Col sm={6} md={4} lg={3} >
+                                    <Card className="h-100" style={{ textAlign: "center" }}>
+                                        <Card.Img width={100} height={200} src={`${favourite.image_url}`} />
+                                        <Card.Body className="d-flex flex-column flex-grow-1 justify-content-between gap-3">
+                                            <div className="d-flex  flex-column gap-2">
+                                                <Card.Title>{favourite.recipe_name}</Card.Title>
+                                                <Card.Subtitle>Country: {favourite.recipe_country}</Card.Subtitle>
+                                                <Card.Link href={`${favourite.youtube_url}`}>Guide</Card.Link>
+                                            </div>
+                                            <div className="d-flex flex-column flex-wrap gap-2" style={{}}>
+                                                <Button onClick={() => mealDetail(favourite.recipe_id)}>Instruction / Ingredients</Button>
+                                                <Button onClick={() => handleShow(favourite.recipe_id, favourite.recipe_country)}>Post your own creation here</Button>
+                                            </div>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            )
+                        })}
+                    </Row>
                 </Col>
             </Row>
             <Modal show={show} onHide={handleClose}>
-                <Form onSubmit={handleSubmit}>
+                <Form className="d-flex flex-column gap-3" onSubmit={handleSubmit} style={{ fontFamily: "cursive", padding: "15px" }}>
                     <Form.Group>
+                        <p style={{ textAlign: 'center', fontSize: "25px" }}>Post Detail</p>
+                        <hr style={{ width: "95%", margin: "0 auto", marginBottom: "20px" }} />
                         <Form.Label>Title:</Form.Label>
                         <Form.Control
                             type="text"
@@ -172,7 +196,7 @@ export default function Favourite() {
                         <Form.Control
                             type="number"
                             min="0"
-                            step="0.01"
+                            step="1.00"
                             value={price}
                             onChange={(e) => setPrice(e.target.value)}
                             required

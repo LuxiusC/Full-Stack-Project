@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { Form, Button } from "react-bootstrap";
 import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 
 export default function SetProfile() {
@@ -17,7 +18,7 @@ export default function SetProfile() {
     const [occupation, setOccupation] = useState('')
     const [uid, setUid] = useState(null)
     const [userData, setUserData] = useState(null)
-
+    const navigate = useNavigate()
 
     console.log(image_url)
 
@@ -51,6 +52,8 @@ export default function SetProfile() {
             setLoading(true)
             const response = await axios.post(`${urls}/profile`, data)
             setUserData(response.data)
+            navigate('/userpage')
+
         } catch (err) {
             setError(err, "Fail to update")
         } finally {
