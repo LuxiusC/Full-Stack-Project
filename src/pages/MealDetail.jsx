@@ -67,15 +67,23 @@ export default function MealDetail() {
 
 
     return (
-        <div>
-            {ingredients.map((item, index) => {
-                return (
-                    <p key={index}>{item.ingredient}:{item.measure}</p>
-                )
-            })}
-            <p>{meal.strInstructions}</p>
-            <button onClick={() => handleFavourite()}>S</button>
-            {success ? <p>nice</p> : null}
+        <div style={{ backgroundImage: `linear-gradient(rgba(244, 235, 217, 0.8), rgba(244, 235, 217, 0.6)),url(${background})` }} className="d-flex justify-content-center align-items-center vh-100">
+            <div style={{ fontFamily: "cursive", color: "#2C2C2C", borderRadius: "10px", textAlign: "start", backgroundColor: "rgba(255, 255, 255, 0.75)", width: "80%", padding: "10px" }}>
+                <p style={{ textAlign: "center" }}>Ingredients List:</p>
+                <ul>
+                    {ingredients.map((item, index) => {
+                        return (
+                            <li key={index}>{item.ingredient} : {item.measure}</li>
+                        )
+                    })}
+                </ul>
+                <p style={{ textAlign: 'center' }}>Instruction:</p>
+                <p style={{ textAlign: 'center' }}>{meal.strInstructions}</p>
+                <div className="d-flex justify-content-center">
+                    <button style={{ backgroundColor: "transparent", border: "0px", marginTop: "5px", marginBottom: "5px" }} onClick={() => handleFavourite()}><i style={{ color: "red" }} class="bi bi-heart-fill"></i> Add To Favourite</button>
+                </div>
+                {success ? <p>Added To Favourite</p> : null}
+            </div>
         </div>
     )
 }
