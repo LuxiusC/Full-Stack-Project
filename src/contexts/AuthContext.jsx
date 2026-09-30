@@ -15,6 +15,7 @@ export function AuthProvider({ children }) {
     const [error, setError] = useState('')
 
     console.log(user)
+    console.log(userInfo)
 
     useEffect(() => {
         return auth.onAuthStateChanged((userNow) => {
@@ -38,6 +39,7 @@ export function AuthProvider({ children }) {
         }
         fetchUserInfo()
     }, [user])
+
 
     async function handleImageUpload(file) {
         const fileRef = ref(storage, `users/${user.uid}/${file.name}`)

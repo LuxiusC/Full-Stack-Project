@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { AuthContext } from '../contexts/AuthContext'
 import { useContext } from 'react'
-import { Row, Col, Form, Card, Button, Modal, Image } from 'react-bootstrap'
+import { Row, Col, Form, Card, Button, Modal, Image, ButtonGroup } from 'react-bootstrap'
 import icon from './images/icon.png'
 import background from './images/background-2.jpg'
 import { useNavigate } from 'react-router-dom'
@@ -157,14 +157,19 @@ export default function Marketplace() {
                     <Image src={icon} />
                     {userInfo ?
                         <div style={{ textAlign: "center" }}>
-                            <p> Welcome , <a href="/userpage">{userInfo?.name}</a></p>
-                            <a href="/recipes" className="me-2">Recipes</a>
-                            <span><a href="/favourites">Favourites</a></span>
+                            <p>Welcome, {userInfo.name}</p>
+                            <ButtonGroup className="p-1 bg-light rounded-pill border">
+                                <Button style={{ color: "#000000", border: "0px" }} className="rounded-pill bg-light">Favourites</Button>
+                                <Button style={{ color: "#000000", border: "0px" }} className="rounded-pill bg-light">Recipes</Button>
+                            </ButtonGroup>
                             <hr />
                         </div>
                         : ""
                     }
                     <div className="px-5 py-2">
+                        <div style={{ fontFamily: "cursive", textAlign: 'center', fontWeight: 'bold' }}>
+                            <p>Filter:</p>
+                        </div>
                         {category?.map((cat) => (
                             <Form.Check
                                 type="checkbox"
@@ -184,7 +189,7 @@ export default function Marketplace() {
                         {allActive().map((active) => {
                             return active.purchase_state === false ?
                                 <Col sm={6} md={4} lg={3} key={active.id} className="me-3" style={{ maxHeight: '500px', objectFit: "cover" }}>
-                                    <Card className="d-flex flex-column gap-4" style={{ backgroundColor: "#F9F8F3", fontFamily: "cursive" }}>
+                                    <Card key={active.id} className="d-flex flex-column gap-4" style={{ backgroundColor: "#F9F8F3", fontFamily: "cursive" }}>
                                         <Card.Img width={250} height={170} variant="top" src={`${active.image_url}`} />
                                         <Card.Body className="d-flex flex-column justify-content-between">
                                             <div className="d-flex flex-column gap-2" style={{ textAlign: "center" }}>
@@ -193,13 +198,13 @@ export default function Marketplace() {
                                                 <Card.Subtitle>Country: {active.recipe_country}</Card.Subtitle>
                                             </div>
                                             {active.firebase_uid === uid ?
-                                                <div className="d-flex flex-row flex-wrap gap-2" style={{ justifyContent: "center", marginTop: "10px" }}>
+                                                <div key={active.id} className="d-flex flex-row flex-wrap gap-2" style={{ justifyContent: "center", marginTop: "10px" }}>
                                                     <Button onClick={() => handleShow(active)}><i class="bi bi-pencil-square"></i></Button>
                                                     <Button variant="danger" onClick={() => handleShowDelete(active)}><i class="bi bi-trash3"></i></Button>
                                                 </div>
                                                 :
-                                                <div style={{ display: "flex", justifyContent: 'center' }}>
-                                                    {active.purchase_state === false ? <Button style={{ width: "90%", marginTop: "10px" }} onClick={() => handleShowBuy(active)}>Buy</Button> : <p>Sold</p>}
+                                                <div key={active.id} style={{ display: "flex", justifyContent: 'center' }}>
+                                                    {active.purchase_state === false ? <Button style={{ backgroundColor: "#B29A78", border: "0px", width: "90%", marginTop: "10px" }} onClick={() => handleShowBuy(active)}>Buy</Button> : <p>Sold</p>}
                                                 </div>
                                             }
                                         </Card.Body>

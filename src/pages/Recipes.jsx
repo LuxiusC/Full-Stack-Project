@@ -104,7 +104,7 @@ export default function Recipes() {
                     <Button variant="danger" onClick={() => userLogout()} style={{ width: "90%" }}>Logout</Button>
                 </div>
             </Col>
-            <Col xs={8} md={9} lg={10} className="py-1"  >
+            <Col xs={8} md={9} lg={9} className="py-1"  >
                 <Row className="row-gy-3 pe-2 g-4">
                     {meals.map((meal, index) => {
                         const mealName = meal.strMeal

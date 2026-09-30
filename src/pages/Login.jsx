@@ -6,7 +6,7 @@ import { AuthContext } from "../contexts/AuthContext";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Form, Image, Button } from "react-bootstrap";
-
+import axios from "axios";
 export default function Login() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -15,7 +15,7 @@ export default function Login() {
     const [success, setSuccess] = useState('')
     const [error, setError] = useState('')
     const [register, setRegister] = useState(false)
-    const { user } = useContext(AuthContext)
+    const { url } = useContext(AuthContext)
     const navigate = useNavigate()
     const auth = getAuth()
 
@@ -47,6 +47,7 @@ export default function Login() {
             setSuccess("Register succesfully.Please proceed to login.")
             navigate('/login')
             console.log(res.user)
+
         } catch (error) {
             console.error(error)
             setError(error.message)
@@ -61,8 +62,12 @@ export default function Login() {
                 email,
                 password
             )
-            navigate('/setProfile')
-            console.log(res.user)
+            const profileRes = await axios.get(`${url}/profile/${res.user.uid}`)
+            if (profileRes.status === 200) {
+                navigate('/recipes')
+            } else {
+                navigate('/setProfile')
+            }
         } catch (error) {
             console.error(error)
         }
