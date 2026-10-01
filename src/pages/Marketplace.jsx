@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
 import { AuthContext } from '../contexts/AuthContext'
-import { useContext } from 'react'
-import { Row, Col, Form, Card, Button, Modal, Image, ButtonGroup } from 'react-bootstrap'
+import {
+    Row, Col, Form, Card, Button, Modal, Image, ButtonGroup,
+    Navbar, Container, Offcanvas
+} from 'react-bootstrap'
 import icon from './images/icon.png'
 import background from './images/background-2.jpg'
 import { useNavigate } from 'react-router-dom'
@@ -19,9 +21,13 @@ export default function Marketplace() {
     const [showDelete, setShowDelete] = useState(false)
     const [showBuy, setShowBuy] = useState(false)
     const [postId, setPostId] = useState('')
+    const [searchValue, setSearchValue] = useState('')
+
+    // State for mobile drawer menu
+    const [showSidebar, setShowSidebar] = useState(false)
+
     const navigate = useNavigate()
 
-    console.log(allPosts)
     const handleShow = (post) => {
         setPostId(post.id)
         setTitle(post.title)
@@ -43,13 +49,16 @@ export default function Marketplace() {
     }
     const handleCloseBuy = () => setShowBuy(false)
 
+    const handleCloseSidebar = () => setShowSidebar(false)
+    const handleShowSidebar = () => setShowSidebar(true)
 
     const uid = userInfo?.firebase_uid
 
     const handleImage = async (e) => {
         let files = e.target.files[0]
-        const url = await handleImageUpload(files)
-        setImageUrl(url)
+        if (!files) return
+        const uploadedUrl = await handleImageUpload(files)
+        setImageUrl(uploadedUrl)
     }
 
     const userLogout = async () => {
@@ -86,7 +95,7 @@ export default function Marketplace() {
 
     const handleDelete = async () => {
         try {
-            const res = await axios.delete(`${url}/delete/${postId}`)
+            await axios.delete(`${url}/delete/${postId}`)
             setAllPosts((prevPosts) =>
                 prevPosts.filter((post) => post.id !== postId)
             )
@@ -102,9 +111,7 @@ export default function Marketplace() {
             console.log(res)
             handleCloseBuy()
 
-            setAllPosts((prev) => {
-                return prev.filter((p) => p.id !== postId)
-            })
+            setAllPosts((prev) => prev.filter((p) => p.id !== postId))
         } catch (err) {
             console.error(err, err.message)
         }
@@ -119,9 +126,13 @@ export default function Marketplace() {
     }
 
     const allActive = () => {
-        if (activeCategories.length === 0) return allPosts
+        return allPosts.filter((post) => {
+            const matchesCategory = activeCategories.length === 0 || activeCategories.includes(post.recipe_country)
+            const matchesSearch = post.title?.toLowerCase().includes(searchValue.toLowerCase()) ||
+                post.recipe_country?.toLowerCase().includes(searchValue.toLowerCase())
 
-        return allPosts.filter((post) => activeCategories.includes(post.recipe_country))
+            return matchesCategory && matchesSearch
+        })
     }
 
     useEffect(() => {
@@ -134,141 +145,290 @@ export default function Marketplace() {
             }
         }
         handleResult()
-    }, [])
+    }, [url])
 
     useEffect(() => {
-        const countries = []
-        allPosts?.map((post) => {
-            const country = post.recipe_country
-            const allCountry = countries.push(country)
-        })
+        if (!allPosts) return
+        const countries = allPosts.map((post) => post.recipe_country).filter(Boolean)
         const noDups = [...new Set(countries)]
         setCategory(noDups)
     }, [allPosts])
 
+    // Reusable Sidebar Content Component
+    const SidebarContent = () => (
+        <div className="d-flex flex-column h-100 py-3 px-3">
+            <div className="text-center mb-3">
+                <Image src={icon} alt="Logo" style={{ maxHeight: "60px", maxWidth: "100%" }} />
+            </div>
+
+            {userInfo && (
+                <div className="text-center mb-3">
+                    <p className="fw-semibold mb-2">Welcome, {userInfo.name}</p>
+                    <ButtonGroup className="p-1 bg-light rounded-pill border w-100">
+                        <Button onClick={() => navigate("/favourites")} style={{ color: "#000000", border: "0px" }} className="rounded-pill bg-light btn-sm w-50">
+                            Favourites
+                        </Button>
+                        <Button onClick={() => navigate("/recipes")} style={{ color: "#000000", border: "0px" }} className="rounded-pill bg-light btn-sm w-50">
+                            Recipes
+                        </Button>
+                    </ButtonGroup>
+                    <hr className="my-3" />
+                </div>
+            )}
+
+            <div className="px-2 mb-4">
+                <div style={{ fontSize: "18px", fontFamily: "cursive", fontWeight: 'bold' }} className="text-center mb-2">
+                    Filter:
+                </div>
+                <div style={{ maxHeight: "250px", overflowY: "auto" }}>
+                    {category?.map((cat, idx) => (
+                        <Form.Check
+                            key={idx}
+                            type="switch"
+                            id={`cat-${idx}`}
+                            checked={activeCategories.includes(cat)}
+                            value={cat}
+                            label={cat}
+                            onChange={(e) => handleActive(e.target.value)}
+                            className="mb-2"
+                        />
+                    ))}
+                </div>
+            </div>
+
+            <div className="mt-auto text-center pt-3 border-top">
+                <Button variant="danger" onClick={() => userLogout()} className="w-100 rounded-3">
+                    Logout
+                </Button>
+            </div>
+        </div>
+    )
+
     return (
-        <>
-            <Row style={{ display: "flex", backgroundImage: `linear-gradient(rgba(244, 235, 217, 0.65), rgba(244, 235, 217, 0.6)),url(${background})` }}>
-                <Col xs={4} md={2} lg={2} className="d-flex flex-column vh-100 py-4 position-sticky top-0"
-                    style={{
-                        backgroundColor: "rgba(255, 255, 255, 0.95)",
-                        borderRight: "1px solid rgba(0, 0, 0, 0.08)"
-                    }}>
-                    <Image src={icon} />
-                    {userInfo ?
-                        <div style={{ textAlign: "center" }}>
-                            <p>Welcome, {userInfo.name}</p>
-                            <ButtonGroup className="p-1 bg-light rounded-pill border">
-                                <Button style={{ color: "#000000", border: "0px" }} className="rounded-pill bg-light">Favourites</Button>
-                                <Button style={{ color: "#000000", border: "0px" }} className="rounded-pill bg-light">Recipes</Button>
-                            </ButtonGroup>
-                            <hr />
-                        </div>
-                        : ""
-                    }
-                    <div className="px-5 py-2">
-                        <div style={{ fontFamily: "cursive", textAlign: 'center', fontWeight: 'bold' }}>
-                            <p>Filter:</p>
-                        </div>
-                        {category?.map((cat) => (
-                            <Form.Check
-                                type="checkbox"
-                                checked={activeCategories.includes(cat)}
-                                value={cat}
-                                label={cat}
-                                onChange={(e) => handleActive(e.target.value)}
-                            />
-                        ))}
+        <div className="min-vh-100" style={{ backgroundImage: `linear-gradient(rgba(244, 235, 217, 0.65), rgba(244, 235, 217, 0.6)), url(${background})`, backgroundSize: "cover", backgroundAttachment: "fixed" }}>
+
+            {/* MOBILE TOP NAVBAR (Visible only on mobile/tablet screens < md) */}
+            <Navbar expand="md" className="d-md-none bg-white shadow-sm sticky-top px-3">
+                <Container fluid className="p-0">
+                    <Button variant="outline-dark" onClick={handleShowSidebar} className="border-0 p-1">
+                        ☰ Filter Menu
+                    </Button>
+                    <Navbar.Brand onClick={() => navigate("/")} className="m-0">
+                        <Image src={icon} style={{ height: "35px" }} />
+                    </Navbar.Brand>
+                    <div
+                        style={{
+                            width: "36px",
+                            height: "36px",
+                            borderRadius: "50%",
+                            overflow: "hidden",
+                            cursor: "pointer"
+                        }}
+                        onClick={() => navigate("/userpage")}
+                    >
+                        <Image
+                            src={userInfo?.image_url}
+                            alt="User profile"
+                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        />
                     </div>
-                    <div className="mt-auto" style={{ display: "flex", justifyContent: "center" }}>
-                        <Button variant="danger" onClick={() => userLogout()} style={{ width: "90%" }}>Logout</Button>
-                    </div>
-                </Col>
-                <Col sm={8} md={9} lg={9} className="mt-2">
-                    <Row className="row-gy-3 pe-2 g-4">
-                        {allActive().map((active) => {
-                            return active.purchase_state === false ?
-                                <Col sm={6} md={4} lg={3} key={active.id} className="me-3" style={{ maxHeight: '500px', objectFit: "cover" }}>
-                                    <Card key={active.id} className="d-flex flex-column gap-4" style={{ backgroundColor: "#F9F8F3", fontFamily: "cursive" }}>
-                                        <Card.Img width={250} height={170} variant="top" src={`${active.image_url}`} />
-                                        <Card.Body className="d-flex flex-column justify-content-between">
-                                            <div className="d-flex flex-column gap-2" style={{ textAlign: "center" }}>
-                                                <Card.Subtitle>Title: {active.title}</Card.Subtitle>
-                                                <Card.Subtitle>Price: {active.price}</Card.Subtitle>
-                                                <Card.Subtitle>Country: {active.recipe_country}</Card.Subtitle>
+                </Container>
+            </Navbar>
+
+            {/* MOBILE DRAWER (Offcanvas) */}
+            <Offcanvas show={showSidebar} onHide={handleCloseSidebar} placement="start" className="d-md-none">
+                <Offcanvas.Header closeButton>
+                    <Offcanvas.Title>Menu & Filters</Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body className="p-0">
+                    <SidebarContent />
+                </Offcanvas.Body>
+            </Offcanvas>
+
+            <Container fluid className="p-0">
+                <Row className="g-0">
+                    {/* DESKTOP FIXED SIDEBAR (Hidden on screens < md) */}
+                    <Col md={3} lg={2} className="d-none d-md-block vh-100 position-sticky top-0 bg-white shadow-sm border-end">
+                        <SidebarContent />
+                    </Col>
+
+                    {/* MAIN MARKETPLACE CONTENT */}
+                    <Col xs={12} md={9} lg={10} className="p-3 p-md-4">
+
+                        {/* SEARCH HEADER */}
+                        <Row className="mb-4 justify-content-center">
+                            <Col xs={12} sm={8} md={6} lg={5} className="d-flex align-items-center gap-2">
+                                <Form.Control
+                                    type="search"
+                                    placeholder="Search marketplace..."
+                                    value={searchValue}
+                                    onChange={(e) => setSearchValue(e.target.value)}
+                                    style={{
+                                        boxShadow: "none",
+                                        border: "2px solid #2e7d32",
+                                        borderRadius: "20px",
+                                        padding: "6px 15px"
+                                    }}
+                                />
+                                <div
+                                    className="d-none d-md-block flex-shrink-0"
+                                    style={{
+                                        width: "38px",
+                                        height: "38px",
+                                        borderRadius: "50%",
+                                        overflow: "hidden",
+                                        cursor: "pointer"
+                                    }}
+                                    onClick={() => navigate("/userpage")}
+                                >
+                                    <Image
+                                        src={userInfo?.image_url}
+                                        alt="User profile"
+                                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                                    />
+                                </div>
+                            </Col>
+                        </Row>
+
+                        {/* PRODUCT POSTS GRID */}
+                        <Row className="g-3 g-md-4">
+                            {allActive().map((active) => (
+                                active.purchase_state === false && (
+                                    <Col key={active.id} xs={12} sm={6} md={6} lg={4} xl={3}>
+                                        <Card className="h-100 border-0 rounded-4 shadow-sm overflow-hidden" style={{ backgroundColor: "#F9F8F3", fontFamily: "Comic Sans MS" }}>
+                                            <div style={{ position: "relative", height: "180px" }}>
+                                                <Card.Img
+                                                    src={active.image_url}
+                                                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                                                />
+                                                <span
+                                                    className="badge rounded-pill bg-light text-dark shadow-sm position-absolute"
+                                                    style={{ top: "12px", right: "12px", fontSize: "12px", opacity: 0.9 }}
+                                                >
+                                                    📍 {active.recipe_country}
+                                                </span>
                                             </div>
-                                            {active.firebase_uid === uid ?
-                                                <div key={active.id} className="d-flex flex-row flex-wrap gap-2" style={{ justifyContent: "center", marginTop: "10px" }}>
-                                                    <Button onClick={() => handleShow(active)}><i class="bi bi-pencil-square"></i></Button>
-                                                    <Button variant="danger" onClick={() => handleShowDelete(active)}><i class="bi bi-trash3"></i></Button>
-                                                </div>
-                                                :
-                                                <div key={active.id} style={{ display: "flex", justifyContent: 'center' }}>
-                                                    {active.purchase_state === false ? <Button style={{ backgroundColor: "#B29A78", border: "0px", width: "90%", marginTop: "10px" }} onClick={() => handleShowBuy(active)}>Buy</Button> : <p>Sold</p>}
-                                                </div>
-                                            }
-                                        </Card.Body>
-                                    </Card>
-                                </Col>
-                                :
-                                null
-                        })}
-                    </Row>
-                </Col>
 
-            </Row>
+                                            <Card.Body className="d-flex flex-column justify-content-between p-3 text-center">
+                                                <div>
+                                                    <Card.Title className="fw-bold fs-6 mb-1 text-dark">
+                                                        {active.title}
+                                                    </Card.Title>
+                                                    <Card.Subtitle className="text-muted fw-bold mb-3">
+                                                        ${active.price}
+                                                    </Card.Subtitle>
+                                                </div>
 
+                                                {active.firebase_uid === uid ? (
+                                                    <div className="d-flex justify-content-center gap-2 mt-2">
+                                                        <Button
+                                                            variant="outline-success"
+                                                            size="sm"
+                                                            onClick={() => handleShow(active)}
+                                                            className="rounded-3 px-3"
+                                                        >
+                                                            <i className="bi bi-pencil-square"></i> Edit
+                                                        </Button>
+                                                        <Button
+                                                            variant="outline-danger"
+                                                            size="sm"
+                                                            onClick={() => handleShowDelete(active)}
+                                                            className="rounded-3 px-3"
+                                                        >
+                                                            <i className="bi bi-trash3"></i> Delete
+                                                        </Button>
+                                                    </div>
+                                                ) : (
+                                                    <div className="d-flex justify-content-center mt-2">
+                                                        <Button
+                                                            className="rounded-pill px-4 btn-sm fw-bold text-white"
+                                                            style={{ backgroundColor: "#2b6d5e", borderColor: "#2b6d5e" }}
+                                                            onClick={() => handleShowBuy(active)}
+                                                        >
+                                                            Purchase
+                                                        </Button>
+                                                    </div>
+                                                )}
+                                            </Card.Body>
+                                        </Card>
+                                    </Col>
+                                )
+                            ))}
+                        </Row>
+                    </Col>
+                </Row>
+            </Container>
+
+            {/* DELETE MODAL */}
             <Modal centered show={showDelete} onHide={handleCloseDelete}>
-                <Modal.Header>Are you sure you want to delete this post? </Modal.Header>
-                <Modal.Footer>
-                    <Button variant="success" onClick={() => handleDelete()}>Yes</Button>
-                    <Button variant="danger">No</Button>
+                <Modal.Header closeButton>
+                    <Modal.Title className="fs-6">Confirm Deletion</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="text-center py-4">
+                    Are you sure you want to delete this post?
+                </Modal.Body>
+                <Modal.Footer className="justify-content-center">
+                    <Button variant="success" onClick={handleDelete} className="px-4">Yes</Button>
+                    <Button variant="danger" onClick={handleCloseDelete} className="px-4">No</Button>
                 </Modal.Footer>
             </Modal>
 
+            {/* PURCHASE MODAL */}
             <Modal centered show={showBuy} onHide={handleCloseBuy}>
-                <Modal.Header>Are you sure you want to buy the food? </Modal.Header>
-                <Modal.Footer>
-                    <Button variant="success" onClick={() => handlePurchase()}>Yes</Button>
-                    <Button variant="danger">No</Button>
+                <Modal.Header closeButton>
+                    <Modal.Title className="fs-6">Confirm Purchase</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="text-center py-4">
+                    Are you sure you want to buy this item?
+                </Modal.Body>
+                <Modal.Footer className="justify-content-center">
+                    <Button variant="success" onClick={handlePurchase} className="px-4">Yes</Button>
+                    <Button variant="danger" onClick={handleCloseBuy} className="px-4">No</Button>
                 </Modal.Footer>
             </Modal>
 
-            <Modal show={show} onHide={handleClose}>
-                <Form className="d-flex flex-column gap-3" style={{ padding: "20px", fontFamily: "cursive" }} onSubmit={handleEdit}>
-                    <p style={{ textAlign: 'center', fontSize: "25px" }}>Edit Post:</p>
-                    <hr style={{ width: "95%", margin: "0 auto", marginBottom: "20px" }} />
-                    <Form.Group>
-                        <Form.Label>Title:</Form.Label>
-                        <Form.Control
-                            type="text"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            required
-                        />
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>Price:</Form.Label>
-                        <Form.Control
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            value={price}
-                            onChange={(e) => setPrice(e.target.value)}
-                            required
-                        />
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>Image:</Form.Label>
-                        <Form.Control
-                            type="file"
-                            onChange={(e) => handleImage(e)}
-                        />
-                    </Form.Group>
-                    <Button type="submit" >Submit</Button>
-                </Form>
+            {/* EDIT MODAL */}
+            <Modal show={show} onHide={handleClose} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title style={{ fontFamily: "cursive" }} className="w-100 text-center">
+                        Edit Post
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="p-3 p-md-4">
+                    <Form className="d-flex flex-column gap-3" style={{ fontFamily: "cursive" }} onSubmit={handleEdit}>
+                        <Form.Group>
+                            <Form.Label>Title:</Form.Label>
+                            <Form.Control
+                                type="text"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                required
+                            />
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Price:</Form.Label>
+                            <Form.Control
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                value={price}
+                                onChange={(e) => setPrice(e.target.value)}
+                                required
+                            />
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Image:</Form.Label>
+                            <Form.Control
+                                type="file"
+                                onChange={handleImage}
+                            />
+                        </Form.Group>
+                        <Button type="submit" variant="success" className="mt-2 py-2 fw-bold">
+                            Save Changes
+                        </Button>
+                    </Form>
+                </Modal.Body>
             </Modal>
-
-        </>
+        </div>
     )
 }
