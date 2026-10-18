@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom'
 export const AuthContext = createContext()
 
 export function AuthProvider({ children }) {
-    const url = "http://localhost:3000"
+    const url = "https://fullstack-backends.vercel.app"
     const [user, setUser] = useState(null)
     const [loading, setLoading] = useState(true)
     const [userInfo, setUserInfo] = useState(null)
