@@ -23,7 +23,7 @@ export default function Marketplace() {
     const [postId, setPostId] = useState('')
     const [searchValue, setSearchValue] = useState('')
 
-    // State for mobile drawer menu
+
     const [showSidebar, setShowSidebar] = useState(false)
 
     const navigate = useNavigate()
@@ -154,7 +154,7 @@ export default function Marketplace() {
         setCategory(noDups)
     }, [allPosts])
 
-    // Reusable Sidebar Content Component
+
     const SidebarContent = () => (
         <div className="d-flex flex-column h-100 py-3 px-3">
             <div className="text-center mb-3">
@@ -207,7 +207,7 @@ export default function Marketplace() {
     return (
         <div className="min-vh-100" style={{ backgroundImage: `linear-gradient(rgba(244, 235, 217, 0.65), rgba(244, 235, 217, 0.6)), url(${background})`, backgroundSize: "cover", backgroundAttachment: "fixed" }}>
 
-            {/* MOBILE TOP NAVBAR (Visible only on mobile/tablet screens < md) */}
+
             <Navbar expand="md" className="d-md-none bg-white shadow-sm sticky-top px-3">
                 <Container fluid className="p-0">
                     <Button variant="outline-dark" onClick={handleShowSidebar} className="border-0 p-1">
@@ -235,7 +235,7 @@ export default function Marketplace() {
                 </Container>
             </Navbar>
 
-            {/* MOBILE DRAWER (Offcanvas) */}
+
             <Offcanvas show={showSidebar} onHide={handleCloseSidebar} placement="start" className="d-md-none">
                 <Offcanvas.Header closeButton>
                     <Offcanvas.Title>Menu & Filters</Offcanvas.Title>
@@ -247,15 +247,15 @@ export default function Marketplace() {
 
             <Container fluid className="p-0">
                 <Row className="g-0">
-                    {/* DESKTOP FIXED SIDEBAR (Hidden on screens < md) */}
+
                     <Col md={3} lg={2} className="d-none d-md-block vh-100 position-sticky top-0 bg-white shadow-sm border-end">
                         <SidebarContent />
                     </Col>
 
-                    {/* MAIN MARKETPLACE CONTENT */}
+
                     <Col xs={12} md={9} lg={10} className="p-3 p-md-4">
 
-                        {/* SEARCH HEADER */}
+
                         <Row className="mb-4 justify-content-center">
                             <Col xs={12} sm={8} md={6} lg={5} className="d-flex align-items-center gap-2">
                                 <Form.Control
@@ -290,7 +290,7 @@ export default function Marketplace() {
                             </Col>
                         </Row>
 
-                        {/* PRODUCT POSTS GRID */}
+
                         <Row className="g-3 g-md-4">
                             {allActive().map((active) => (
                                 active.purchase_state === false && (
@@ -359,7 +359,7 @@ export default function Marketplace() {
                 </Row>
             </Container>
 
-            {/* DELETE MODAL */}
+
             <Modal centered show={showDelete} onHide={handleCloseDelete}>
                 <Modal.Header closeButton>
                     <Modal.Title className="fs-6">Confirm Deletion</Modal.Title>
@@ -373,7 +373,7 @@ export default function Marketplace() {
                 </Modal.Footer>
             </Modal>
 
-            {/* PURCHASE MODAL */}
+
             <Modal centered show={showBuy} onHide={handleCloseBuy}>
                 <Modal.Header closeButton>
                     <Modal.Title className="fs-6">Confirm Purchase</Modal.Title>
@@ -387,7 +387,7 @@ export default function Marketplace() {
                 </Modal.Footer>
             </Modal>
 
-            {/* EDIT MODAL */}
+
             <Modal show={show} onHide={handleClose} centered>
                 <Modal.Header closeButton>
                     <Modal.Title style={{ fontFamily: "cursive" }} className="w-100 text-center">

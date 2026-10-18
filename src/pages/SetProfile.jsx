@@ -8,7 +8,7 @@ import axios from "axios";
 
 export default function SetProfile() {
 
-    const { user, handleImageUpload, url } = useContext(AuthContext)
+    const { user, handleImageUpload, url, userInfo } = useContext(AuthContext)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [name, setName] = useState('')
@@ -20,10 +20,6 @@ export default function SetProfile() {
     const [userData, setUserData] = useState(null)
     const navigate = useNavigate()
 
-    console.log(image_url)
-    console.log(uid)
-
-    console.log(user)
 
 
     useEffect(() => {
@@ -31,6 +27,8 @@ export default function SetProfile() {
         setName(user.displayName)
         setEmail(user.email)
         setUid(user.uid)
+        setIntroduction(userInfo?.introduction)
+        setOccupation(userInfo?.occupation)
     }, [user])
 
     const imageUpload = async (e) => {

@@ -96,7 +96,7 @@ export default function MealDetail() {
                     position: "relative"
                 }}
             >
-                {/* Back Button */}
+
                 <span
                     onClick={() => navigate('/recipes')}
                     style={{
@@ -111,7 +111,7 @@ export default function MealDetail() {
                     <i className="bi bi-arrow-bar-left"></i>
                 </span>
 
-                {/* Main Meal Title and Hero Image */}
+
                 <h1
                     style={{
                         fontFamily: "'Playfair Display', serif",
@@ -139,9 +139,9 @@ export default function MealDetail() {
                     </div>
                 )}
 
-                {/* Two-Column Recipe Layout */}
+
                 <div className="row mt-4">
-                    {/* Ingredients Column */}
+
                     <div className="col-md-5" style={{ paddingRight: "30px", borderRight: "1px solid #E0E0E0" }}>
                         <h3 style={{ borderBottom: "2px solid #D2B48C", paddingBottom: "10px", color: "#5D4037" }}>Ingredients List</h3>
                         <ul style={{ listStyleType: "none", paddingLeft: "10px" }}>
@@ -154,7 +154,7 @@ export default function MealDetail() {
                         </ul>
                     </div>
 
-                    {/* Instructions Column */}
+
                     <div className="col-md-7" style={{ paddingLeft: "30px" }}>
                         <h3 style={{ borderBottom: "2px solid #D2B48C", paddingBottom: "10px", color: "#5D4037" }}>Instructions</h3>
                         <p style={{ lineHeight: "1.8", fontSize: "1.05rem", textAlign: "justify" }}>
@@ -163,7 +163,7 @@ export default function MealDetail() {
                     </div>
                 </div>
 
-                {/* Action Area: Favourite Button and Success Message */}
+
                 <div className="d-flex flex-column align-items-center justify-content-center mt-5" style={{ borderTop: "1px solid #E0E0E0", paddingTop: "20px" }}>
                     <button
                         style={{

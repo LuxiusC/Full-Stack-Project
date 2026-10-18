@@ -15,7 +15,7 @@ export default function Recipes() {
     const [meals, setMeals] = useState([]);
     const [searchValue, setSearchValue] = useState('');
 
-    // Mobile Drawer State
+
     const [showSidebar, setShowSidebar] = useState(false);
 
     const navigate = useNavigate();
@@ -36,7 +36,7 @@ export default function Recipes() {
         navigate(`/mealDetails/${mealId}`);
     };
 
-    // Fetch category names on mount
+
     useEffect(() => {
         fetch('https://www.themealdb.com/api/json/v1/1/list.php?c=list')
             .then((res) => res.json())
@@ -44,7 +44,7 @@ export default function Recipes() {
             .catch((err) => console.error("Error fetching categories:", err));
     }, []);
 
-    // Fetch meals when active categories change
+
     useEffect(() => {
         if (activeCategories.length === 0) {
             setMeals([]);
@@ -69,7 +69,7 @@ export default function Recipes() {
         meal.strMeal.toLowerCase().includes(searchValue.toLowerCase())
     );
 
-    // Shared Sidebar Content Component
+
     const SidebarContent = () => (
         <div className="d-flex flex-column h-100 py-3 px-3">
             <div className="text-center mb-3">
@@ -146,7 +146,7 @@ export default function Recipes() {
                 backgroundAttachment: "fixed"
             }}
         >
-            {/* MOBILE TOP NAVBAR (Visible on screens < md) */}
+
             <Navbar expand="md" className="d-md-none bg-white shadow-sm sticky-top px-3">
                 <Container fluid className="p-0">
                     <Button variant="outline-dark" onClick={handleShowSidebar} className="border-0 p-1">
@@ -174,7 +174,7 @@ export default function Recipes() {
                 </Container>
             </Navbar>
 
-            {/* MOBILE DRAWER (Offcanvas) */}
+
             <Offcanvas show={showSidebar} onHide={handleCloseSidebar} placement="start" className="d-md-none">
                 <Offcanvas.Header closeButton>
                     <Offcanvas.Title>Menu & Filters</Offcanvas.Title>
@@ -186,15 +186,15 @@ export default function Recipes() {
 
             <Container fluid className="p-0">
                 <Row className="g-0">
-                    {/* DESKTOP FIXED SIDEBAR (Hidden on screens < md) */}
+
                     <Col md={3} lg={2} className="d-none d-md-block vh-100 position-sticky top-0 bg-white shadow-sm border-end">
                         <SidebarContent />
                     </Col>
 
-                    {/* MAIN CONTENT AREA */}
+
                     <Col xs={12} md={9} lg={10} className="p-3 p-md-4">
 
-                        {/* SEARCH HEADER */}
+
                         <Row className="mb-4 justify-content-center">
                             <Col xs={12} sm={8} md={6} lg={5} className="d-flex align-items-center gap-2">
                                 <Form.Control
@@ -229,7 +229,7 @@ export default function Recipes() {
                             </Col>
                         </Row>
 
-                        {/* MEALS GRID */}
+
                         <Row className="g-3 g-md-4">
                             {filteredMeals.map((meal) => {
                                 const mealName = meal.strMeal;
@@ -254,7 +254,7 @@ export default function Recipes() {
                                                 e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.06)";
                                             }}
                                         >
-                                            {/* IMAGE CONTAINER */}
+
                                             <div style={{ position: "relative", height: "180px" }}>
                                                 <Card.Img
                                                     src={mealPic}
@@ -271,7 +271,7 @@ export default function Recipes() {
                                                 )}
                                             </div>
 
-                                            {/* CARD CONTENT */}
+
                                             <Card.Body className="d-flex flex-column justify-content-between p-3 text-center">
                                                 <Card.Title className="fw-bold fs-6 mb-3 text-dark" style={{ minHeight: "40px" }}>
                                                     {mealName}

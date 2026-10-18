@@ -22,7 +22,7 @@ export default function Favourite() {
     const [recipe_country, setRecipe_country] = useState('')
     const [searchValue, setSearchValue] = useState('')
     const [success, setSuccess] = useState('')
-
+    const [uploadState, setUploadState] = useState(false)
     // State to handle mobile menu drawer
     const [showSidebar, setShowSidebar] = useState(false)
 
@@ -74,9 +74,15 @@ export default function Favourite() {
     const submitImageUrl = async (e) => {
         const file = e.target.files[0]
         if (!file) return
-
-        const uploadUrl = await handleImageUpload(file)
-        setImageUrl(uploadUrl)
+        try {
+            setUploadState(true)
+            const uploadUrl = await handleImageUpload(file)
+            setImageUrl(uploadUrl)
+        } catch (err) {
+            console.error(err, err.message)
+        } finally {
+            setUploadState(false)
+        }
     }
 
     const handleSubmit = async (e) => {
@@ -358,6 +364,7 @@ export default function Favourite() {
                                 type="file"
                                 onChange={(e) => submitImageUrl(e)}
                             />
+                            {uploadState ? <p>Uploading...</p> : null}
                         </Form.Group>
 
                         <Form.Group>
