@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from 'react'
-import { auth, storage } from "./firebase"
+import { auth, storage } from "../firebase"
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import axios from 'axios'
 import { signOut } from 'firebase/auth'
