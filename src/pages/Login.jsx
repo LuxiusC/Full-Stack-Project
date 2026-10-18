@@ -57,19 +57,31 @@ export default function Login() {
     const handleLogin = async (e) => {
         e.preventDefault()
         try {
+            setError('')
             const res = await signInWithEmailAndPassword(
                 auth,
                 email,
                 password
             )
-            const profileRes = await axios.get(`${url}/profile/${res.user.uid}`)
-            if (profileRes.status === 200) {
-                navigate('/recipes')
-            } else {
-                navigate('/setProfile')
+
+            try {
+                const profileRes = await axios.get(`${url}/profile/${res.user.uid}`)
+                if (profileRes.status === 200) {
+                    navigate('/recipes')
+                }
+            } catch (err) {
+                // If the backend returns a 404 (Profile not found), redirect to setProfile
+                if (err.response && err.response.status === 404) {
+                    navigate('/setProfile')
+                } else {
+                    // Handle other unexpected errors (e.g., server down)
+                    console.error(err)
+                    setError("An error occurred while fetching your profile.")
+                }
             }
         } catch (error) {
             console.error(error)
+            setError(error.message)
         }
     }
 
