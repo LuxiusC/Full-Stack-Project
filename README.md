@@ -1,17 +1,58 @@
-# React + Vite
+# Casaria 🍳
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Casaria is a marketplace and culinary community platform where food lovers can explore diverse recipes, share their own culinary creations, and sell home-cooked dishes inspired by those recipes.
 
-Currently, two official plugins are available:
+[![Live Demo](https://img.shields.io/badge/Vercel-Live--Demo-black?style=for-the-badge&logo=vercel)](https://full-stack-project-five-opal.vercel.app/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 🔗 Project Links
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* **Live Demo:** [Casaria App](https://full-stack-project-five-opal.vercel.app/)
+* **Frontend Repository:** [Full-Stack-Project](https://github.com/LuxiusC/Full-Stack-Project)
+* **Backend Repository:** [Fullstack-Backends](https://github.com/LuxiusC/Fullstack-Backends)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-# Full-Stack-Project
+## 🛠️ Tech Stack
+
+### Frontend
+* **Framework / Library:** React (Vite)
+* **Authentication & Services:** Firebase
+* **Hosting:** Vercel
+
+### Backend
+* **Runtime:** Node.js & Express.js
+* **Database:** PostgreSQL (hosted on [Neon SQL](https://neon.tech/))
+* **Hosting:** Vercel
+
+---
+
+## ✨ Key Features
+
+* **Recipe Discovery:** Browse a wide variety of recipes across different food categories.
+* **Full CRUD Operations:** Create, Read, Update, and Delete recipe postings and food listings.
+* **Home Market Integration:** Share food creations online based on recipes and list them for sale.
+* **Authentication:** Secure user signup and sign-in powered by Firebase Authentication.
+
+---
+
+## 🚀 Getting Started
+
+Follow these instructions to set up and run Casaria locally on your machine.
+
+### Prerequisites
+* [Node.js](https://nodejs.org/) (v16 or higher recommended)
+* [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+
+---
+
+### 1. Backend Setup
+
+```bash
+# Clone the backend repository
+git clone [https://github.com/LuxiusC/Fullstack-Backends.git](https://github.com/LuxiusC/Fullstack-Backends.git)
+cd Fullstack-Backends
+
+# Install dependencies
+npm install
