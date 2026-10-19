@@ -2,13 +2,13 @@
 
 Casaria is a marketplace and culinary community platform where food lovers can explore diverse recipes, share their own culinary creations, and sell home-cooked dishes inspired by those recipes.
 
-[![Live Demo](https://img.shields.io/badge/Vercel-Live--Demo-black?style=for-the-badge&logo=vercel)](https://full-stack-project-five-opal.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/Vercel-Live--Demo-black?style=for-the-badge&logo=vercel)](https://casaria.vercel.app/)
 
 ---
 
 ## 🔗 Project Links
 
-* **Live Demo:** [Casaria App](https://full-stack-project-five-opal.vercel.app/)
+* **Live Demo:** [Casaria App](https://casaria.vercel.app/)
 * **Frontend Repository:** [Full-Stack-Project](https://github.com/LuxiusC/Full-Stack-Project)
 * **Backend Repository:** [Fullstack-Backends](https://github.com/LuxiusC/Fullstack-Backends)
 
