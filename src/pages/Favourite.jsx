@@ -327,7 +327,7 @@ export default function Favourite() {
                                                 >
                                                     Post Creation
                                                 </Button>
-                                                <Button variant="danger" onClick={() => deleteFavourite(favourite.id)}><i class="bi bi-heartbreak"></i>Unfavourite</Button>
+                                                <Button variant="danger" onClick={() => deleteFavourite(favourite.id)}><i class="bi bi-heartbreak"></i>    Unfavourite</Button>
                                             </div>
                                         </Card.Body>
                                     </Card>
