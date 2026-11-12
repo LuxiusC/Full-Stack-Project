@@ -42,6 +42,16 @@ export default function Favourite() {
         }
     }
 
+    const deleteFavourite = async (id) => {
+        try {
+            const res = await axios.delete(`${url}/recipes/delete/${id}`)
+            setFavourites(favourites.filter((favourite) => favourite.id !== id))
+            console.log(res)
+        } catch (err) {
+            console.error(err, err.message)
+        }
+    }
+
     const handleShow = (recipeId, recipeCountry) => {
         setRecipe_id(recipeId)
         setRecipe_country(recipeCountry)
@@ -317,6 +327,7 @@ export default function Favourite() {
                                                 >
                                                     Post Creation
                                                 </Button>
+                                                <Button onClick={() => deleteFavourite(favourite.id)}>Delete</Button>
                                             </div>
                                         </Card.Body>
                                     </Card>
