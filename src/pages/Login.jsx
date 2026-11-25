@@ -67,7 +67,7 @@ export default function Login() {
             try {
                 const profileRes = await axios.get(`${url}/profile/${res.user.uid}`)
                 if (profileRes.status === 200) {
-                    navigate('/recipes')
+                    navigate('/recipes'), { replace: true }
                 }
             } catch (err) {
                 // If the backend returns a 404 (Profile not found), redirect to setProfile
