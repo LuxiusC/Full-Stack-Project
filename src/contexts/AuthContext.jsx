@@ -1,9 +1,8 @@
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useEffect, useState, useCallback } from 'react'
 import { auth, storage } from "../firebase.js"
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import axios from 'axios'
 import { signOut } from 'firebase/auth'
-import { useNavigate } from 'react-router-dom'
 
 export const AuthContext = createContext()
 
@@ -14,52 +13,68 @@ export function AuthProvider({ children }) {
     const [userInfo, setUserInfo] = useState(null)
     const [error, setError] = useState('')
 
-    console.log(user)
-    console.log(userInfo)
+    console.log(userInfo?.image_url)
+
+    const fetchUserInfo = useCallback(async (uidToFetch) => {
+        const targetUid = uidToFetch || auth.currentUser?.uid
+        if (!targetUid) return null
+        try {
+            const response = await axios.get(`${url}/profile/${targetUid}`)
+            setUserInfo(response.data)
+            setError('')
+            return response.data
+        } catch (err) {
+            setError(err.response?.data?.message || err.message || "Failed to fetch data")
+            return null
+        }
+    }, [url])
 
     useEffect(() => {
-        return auth.onAuthStateChanged((userNow) => {
+        const unsubscribe = auth.onAuthStateChanged(async (userNow) => {
             setUser(userNow)
+            if (userNow?.uid) {
+                setLoading(true)
+                await fetchUserInfo(userNow.uid)
+            } else {
+                setUserInfo(null)
+            }
             setLoading(false)
         })
-    }, [])
-
-    useEffect(() => {
-        const fetchUserInfo = async () => {
-            if (!user?.uid) return
-            try {
-                setLoading(true)
-                const response = await axios.get(`${url}/profile/${user.uid}`)
-                setUserInfo(response.data)
-            } catch (err) {
-                setError(err, "Failed to fetch data")
-            } finally {
-                setLoading(false)
-            }
-        }
-        fetchUserInfo()
-    }, [user])
-
+        return unsubscribe
+    }, [fetchUserInfo])
 
     async function handleImageUpload(file) {
-        const fileRef = ref(storage, `users/${user.uid}/${file.name}`)
+        const currentUser = auth.currentUser
+        if (!currentUser) {
+            throw new Error("You must be signed in to upload an image.")
+        }
+        const fileRef = ref(storage, `users/${currentUser.uid}/${file.name}`)
         await uploadBytes(fileRef, file)
-        const url = await getDownloadURL(fileRef)
-        return url
+        return await getDownloadURL(fileRef)
     }
 
     const handleLogout = async () => {
         try {
             await signOut(auth)
             setUserInfo(null)
-            console.log("Signed out succesfully")
-
         } catch (err) {
             console.error(err, err.message)
         }
     }
 
-    const value = { url, user, handleImageUpload, userInfo, error, handleLogout }
+    const refreshUserInfo = useCallback(() => {
+        return fetchUserInfo(auth.currentUser?.uid)
+    }, [fetchUserInfo])
+
+    const value = {
+        url,
+        user,
+        handleImageUpload,
+        userInfo,
+        refreshUserInfo,
+        error,
+        handleLogout
+    }
 
     return (
         <AuthContext.Provider value={value}>

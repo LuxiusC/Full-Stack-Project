@@ -16,6 +16,7 @@ export default function UserPage() {
         navigate('/setProfile')
     }
 
+    console.log(userInfo?.image_url)
 
     return (
         <>

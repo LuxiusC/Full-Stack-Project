@@ -17,12 +17,12 @@ export default function Marketplace() {
     const [title, setTitle] = useState('')
     const [price, setPrice] = useState('')
     const [image_url, setImageUrl] = useState(null)
+    const [uploadingImage, setUploadingImage] = useState(false)
     const [show, setShow] = useState(false)
     const [showDelete, setShowDelete] = useState(false)
     const [showBuy, setShowBuy] = useState(false)
     const [postId, setPostId] = useState('')
     const [searchValue, setSearchValue] = useState('')
-
 
     const [showSidebar, setShowSidebar] = useState(false)
 
@@ -30,9 +30,9 @@ export default function Marketplace() {
 
     const handleShow = (post) => {
         setPostId(post.id)
-        setTitle(post.title)
-        setPrice(post.price)
-        setImageUrl(post.image_url)
+        setTitle(post.title ?? '')
+        setPrice(post.price ?? '')
+        setImageUrl(post.image_url || null)
         setShow(true)
     }
     const handleClose = () => setShow(false)
@@ -55,10 +55,20 @@ export default function Marketplace() {
     const uid = userInfo?.firebase_uid
 
     const handleImage = async (e) => {
-        let files = e.target.files[0]
-        if (!files) return
-        const uploadedUrl = await handleImageUpload(files)
-        setImageUrl(uploadedUrl)
+        const file = e.target.files?.[0]
+        if (!file) return
+        setUploadingImage(true)
+        try {
+            const uploadedUrl = await handleImageUpload(file)
+            console.log(uploadedUrl)
+            if (uploadedUrl) {
+                setImageUrl(uploadedUrl)
+            }
+        } catch (err) {
+            console.error(err, err.message)
+        } finally {
+            setUploadingImage(false)
+        }
     }
 
     const userLogout = async () => {
@@ -72,6 +82,7 @@ export default function Marketplace() {
 
     const handleEdit = async (e) => {
         e?.preventDefault()
+        if (uploadingImage) return
         const data = {
             title: title,
             price: price,
@@ -154,7 +165,6 @@ export default function Marketplace() {
         setCategory(noDups)
     }, [allPosts])
 
-
     const SidebarContent = () => (
         <div className="d-flex flex-column h-100 py-3 px-3">
             <div className="text-center mb-3">
@@ -207,7 +217,6 @@ export default function Marketplace() {
     return (
         <div className="min-vh-100" style={{ backgroundImage: `linear-gradient(rgba(244, 235, 217, 0.65), rgba(244, 235, 217, 0.6)), url(${background})`, backgroundSize: "cover", backgroundAttachment: "fixed" }}>
 
-
             <Navbar expand="md" className="d-md-none bg-white shadow-sm sticky-top px-3">
                 <Container fluid className="p-0">
                     <Button variant="outline-dark" onClick={handleShowSidebar} className="border-0 p-1">
@@ -227,14 +236,14 @@ export default function Marketplace() {
                         onClick={() => navigate("/userpage")}
                     >
                         <Image
-                            src={userInfo?.image_url}
+                            src={userInfo?.image_url || icon}
                             alt="User profile"
+                            onError={(e) => { e.currentTarget.src = icon }}
                             style={{ width: "100%", height: "100%", objectFit: "cover" }}
                         />
                     </div>
                 </Container>
             </Navbar>
-
 
             <Offcanvas show={showSidebar} onHide={handleCloseSidebar} placement="start" className="d-md-none">
                 <Offcanvas.Header closeButton>
@@ -252,9 +261,7 @@ export default function Marketplace() {
                         <SidebarContent />
                     </Col>
 
-
                     <Col xs={12} md={9} lg={10} className="p-3 p-md-4">
-
 
                         <Row className="mb-4 justify-content-center">
                             <Col xs={12} sm={8} md={6} lg={5} className="d-flex align-items-center gap-2">
@@ -282,14 +289,14 @@ export default function Marketplace() {
                                     onClick={() => navigate("/userpage")}
                                 >
                                     <Image
-                                        src={userInfo?.image_url}
+                                        src={userInfo?.image_url || icon}
                                         alt="User profile"
+                                        onError={(e) => { e.currentTarget.src = icon }}
                                         style={{ width: "100%", height: "100%", objectFit: "cover" }}
                                     />
                                 </div>
                             </Col>
                         </Row>
-
 
                         <Row className="g-3 g-md-4">
                             {allActive().map((active) => (
@@ -298,7 +305,8 @@ export default function Marketplace() {
                                         <Card className="h-100 border-0 rounded-4 shadow-sm overflow-hidden" style={{ backgroundColor: "#F9F8F3", fontFamily: "Comic Sans MS" }}>
                                             <div style={{ position: "relative", height: "180px" }}>
                                                 <Card.Img
-                                                    src={active.image_url}
+                                                    src={active.image_url || icon}
+                                                    onError={(e) => { e.currentTarget.src = icon }}
                                                     style={{ width: "100%", height: "100%", objectFit: "cover" }}
                                                 />
                                                 <span
@@ -359,7 +367,6 @@ export default function Marketplace() {
                 </Row>
             </Container>
 
-
             <Modal centered show={showDelete} onHide={handleCloseDelete}>
                 <Modal.Header closeButton>
                     <Modal.Title className="fs-6">Confirm Deletion</Modal.Title>
@@ -373,7 +380,6 @@ export default function Marketplace() {
                 </Modal.Footer>
             </Modal>
 
-
             <Modal centered show={showBuy} onHide={handleCloseBuy}>
                 <Modal.Header closeButton>
                     <Modal.Title className="fs-6">Confirm Purchase</Modal.Title>
@@ -386,7 +392,6 @@ export default function Marketplace() {
                     <Button variant="danger" onClick={handleCloseBuy} className="px-4">No</Button>
                 </Modal.Footer>
             </Modal>
-
 
             <Modal show={show} onHide={handleClose} centered>
                 <Modal.Header closeButton>
@@ -420,11 +425,19 @@ export default function Marketplace() {
                             <Form.Label>Image:</Form.Label>
                             <Form.Control
                                 type="file"
+                                accept="image/*"
                                 onChange={handleImage}
+                                disabled={uploadingImage}
                             />
+                            {uploadingImage && <Form.Text>Uploading image...</Form.Text>}
                         </Form.Group>
-                        <Button type="submit" variant="success" className="mt-2 py-2 fw-bold">
-                            Save Changes
+                        <Button
+                            type="submit"
+                            variant="success"
+                            className="mt-2 py-2 fw-bold"
+                            disabled={uploadingImage}
+                        >
+                            {uploadingImage ? "Uploading..." : "Save Changes"}
                         </Button>
                     </Form>
                 </Modal.Body>
